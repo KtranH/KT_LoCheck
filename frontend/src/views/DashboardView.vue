@@ -14,7 +14,7 @@
           <!-- User menu -->
           <div class="flex items-center space-x-4">
             <button
-              @click="logout"
+              @click="handleLogout"
               class="btn-secondary"
             >
               Đăng xuất
@@ -58,13 +58,11 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
 import LogoIcon from '@/assets/icons/LogoIcon.vue'
+import { useAuth } from '@/composables/useAuth'
+const { logout } = useAuth()
 
-const router = useRouter()
-
-const logout = () => {
-  localStorage.removeItem('token')
-  router.push('/login')
-}
+const handleLogout = async () => {
+  await logout()
+} 
 </script>

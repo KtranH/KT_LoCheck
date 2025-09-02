@@ -104,6 +104,12 @@
 
         <!-- Đăng ký -->
         <div class="mt-6 text-center">
+          <div v-if="errorMessage" class="mb-2 flex justify-center">
+            <div class="flex items-center bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded">
+              <CircleAlert class="w-5 h-5 mr-2 text-red-500" />
+              <span class="text-sm font-medium">{{ errorMessage }}</span>
+            </div>
+          </div>
           <p class="text-sm text-gray-600">
             Chưa có tài khoản?
             <router-link
@@ -121,14 +127,15 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
+import { CircleAlert } from 'lucide-vue-next'
 import LogoIcon from '@/assets/icons/LogoIcon.vue'
 import UserIcon from '@/assets/icons/UserIcon.vue'
 import LockIcon from '@/assets/icons/LockIcon.vue'
 import EyeIcon from '@/assets/icons/EyeIcon.vue'
 
-const router = useRouter()
-const loading = ref(false)
+const { login, isLoading, errorMessage } = useAuth()
+const loading = isLoading
 const showPassword = ref(false)
 
 const form = reactive({
@@ -142,21 +149,10 @@ const togglePassword = () => {
 }
 
 const handleLogin = async () => {
-  loading.value = true
-  
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    // Store token (in real app, this would come from API)
-    localStorage.setItem('token', 'dummy-token')
-    
-    // Redirect to dashboard
-    router.push('/dashboard')
+    await login({ email: form.email, password: form.password, remember: form.remember })
   } catch (error) {
-    console.error('Login error:', error)
-  } finally {
-    loading.value = false
+    // đã set errorMessage trong composable
   }
 }
 </script>
